@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>andrew / profile</title>
+    <!-- Lucide Icons for clean, modern iconography -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Modern Font Stack & Reset */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(20, 20, 25, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(15, 15, 18, 0.8) 0%, transparent 40%);
+            color: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Behind Card */
+        .glow-bg {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Profile Container */
+        .profile-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 450px;
+            background: rgba(18, 18, 18, 0.45);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .profile-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Avatar styling */
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Name and Bio */
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            background: linear-gradient(180deg, #ffffff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .username {
+            font-size: 14px;
+            color: #a3a3a3;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        /* Location and SG Time Badges */
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #e5e5e5;
+            font-weight: 500;
+        }
+
+        .badge i {
+            width: 14px;
+            height: 14px;
+            color: #a3a3a3;
+        }
+
+        /* Projects Section */
+        .projects-section {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #737373;
+            margin-bottom: 12px;
+            font-weight: 600;
+            padding-left: 4px;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Custom Project Link Card */
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px 20px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: #e5e5e5;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .project-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .project-icon-wrapper {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #a3a3a3;
+            transition: color 0.2s;
+        }
+
+        .project-item:hover .project-icon-wrapper {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .project-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .project-name {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .project-domain {
+            font-size: 12px;
+            color: #737373;
+        }
+
+        .arrow-icon {
+            color: #525252;
+            transition: transform 0.2s, color 0.2s;
+            width: 18px;
+            height: 18px;
+        }
+
+        .project-item:hover .arrow-icon {
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+
+        /* Footer Attribution */
+        .footer-text {
+            margin-top: 35px;
+            font-size: 11px;
+            color: #404040;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-bg"></div>
+
+    <div class="profile-card">
+        <!-- Profile Avatar (Using a placeholder, replace with yours if desired) -->
+        <div class="avatar">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop" alt="Profile avatar">
+        </div>
+
+        <!-- Name & Handle -->
+        <h1>Andrew</h1>
+        <div class="username">/profile</div>
+
+        <!-- Location & Live SG Time Status -->
+        <div class="status-container">
+            <div class="badge">
+                <i data-lucide="map-pin"></i>
+                <span>Singapore</span>
+            </div>
+            <div class="badge">
+                <i data-lucide="clock"></i>
+                <span id="sg-time">00:00:00 SGT</span>
+            </div>
+        </div>
+
+        <!-- Projects Panel -->
+        <div class="projects-section">
+            <div class="section-title">Featured Projects</div>
+            <div class="project-list">
+                
+                <!-- Project 1 -->
+                <a href="https://sgtransport.onrender.com/" target="_blank" rel="noopener noreferrer" class="project-item">
+                    <div class="project-info">
+                        <div class="project-icon-wrapper">
+                            <i data-lucide="train-front"></i>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-name">SGTransport</span>
+                            <span class="project-domain">sgtransport.onrender.com</span>
+                        </div>
+                    </div>
+                    <i data-lucide="arrow-up-right" class="arrow-icon"></i>
+                </a>
+
+                <!-- Project 2 -->
+                <a href="https://telcsg.onrender.com/" target="_blank" rel="noopener noreferrer" class="project-item">
+                    <div class="project-info">
+                        <div class="project-icon-wrapper">
+                            <i data-lucide="subway"></i>
+                        </div>
+                        <div class="project-details">
+                            <span class="project-name">TELCSG Website</span>
+                            <span class="project-domain">telcsg.onrender.com</span>
+                        </div>
+                    </div>
+                    <i data-lucide="arrow-up-right" class="arrow-icon"></i>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-text">powered by github</div>
+    </div>
+
+    <!-- Live Singapore Time Script & Icon Initializer -->
+    <script>
+        // Initialize Lucide SVG Icons
+        lucide.createIcons();
+
+        // Live SG Clock Update (SGT is UTC+8)
+        function updateSGTime() {
+            const options = {
+                timeZone: 'Asia/Singapore',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            
+            const formatter = new Intl.DateTimeFormat('en-SG', options);
+            const timeString = formatter.format(new Date());
+            document.getElementById('sg-time').innerText = `${timeString} SGT`;
+        }
+
+        // Run instantly and set interval to keep updating every second
+        updateSGTime();
+        setInterval(updateSGTime, 1000);
+    </script>
+</body>
+</html>
